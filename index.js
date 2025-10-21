@@ -8,6 +8,11 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(express.json());
 
+// 🔹 Simple health check / ping endpoint
+app.get("/ping", (req, res) => {
+  res.status(200).json({ status: "ok", time: new Date().toISOString() });
+});
+
 // GET proxy
 app.get("/proxy", async (req, res) => {
   try {
