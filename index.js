@@ -16,10 +16,25 @@ app.get("/proxy", async (req, res) => {
       return res.status(400).json({ error: "Missing 'url' query parameter" });
     }
 
+    // Extract custom headers from request
+    const customHeaders = {};
+    Object.keys(req.headers).forEach(key => {
+      // Skip Express-specific headers and CORS headers
+      if (!key.startsWith('x-forwarded-') &&
+          !key.startsWith('x-real-') &&
+          key !== 'host' &&
+          key !== 'connection' &&
+          key !== 'content-length' &&
+          key !== 'content-type' &&
+          key !== 'origin' &&
+          key !== 'referer' &&
+          key !== 'user-agent') {
+        customHeaders[key] = req.headers[key];
+      }
+    });
+
     const response = await axios.get(targetUrl, {
-      headers: {
-        // Add your custom headers if needed
-      },
+      headers: customHeaders,
     });
 
     res.status(response.status).json(response.data);
@@ -36,11 +51,25 @@ app.post("/proxy", async (req, res) => {
       return res.status(400).json({ error: "Missing 'url' query parameter" });
     }
 
+    // Extract custom headers from request
+    const customHeaders = {};
+    Object.keys(req.headers).forEach(key => {
+      // Skip Express-specific headers and CORS headers
+      if (!key.startsWith('x-forwarded-') &&
+          !key.startsWith('x-real-') &&
+          key !== 'host' &&
+          key !== 'connection' &&
+          key !== 'content-length' &&
+          key !== 'content-type' &&
+          key !== 'origin' &&
+          key !== 'referer' &&
+          key !== 'user-agent') {
+        customHeaders[key] = req.headers[key];
+      }
+    });
+
     const response = await axios.post(targetUrl, req.body, {
-      headers: {
-        // Add your custom headers if needed
-        // Example: "Authorization": "Bearer YOUR_TOKEN"
-      },
+      headers: customHeaders,
     });
 
     res.status(response.status).json(response.data);
